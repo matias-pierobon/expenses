@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:12-alpine
     restart: unless-stoped
-    env_file: conifg/postgres/.env
+    env_file: conifg/db/.env
     volumes:
       - db:/var/lib/postgresql/data
 
