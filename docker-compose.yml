@@ -1,0 +1,50 @@
+version: "3.3"
+
+services:
+  db:
+    image: postgres:12-alpine
+    restart: unless-stoped
+    env_file: conifg/postgres/.env
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: unless-stoped
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adminer.rule=Host(`*`) && PATH(`/adminer`)"
+      - "traefik.http.routers.adminer.entrypoints=web"
+
+  grafana:
+    image: grafana/grafana
+    restart: unless-stoped
+    env_file: config/grafana/.env
+    volumes:
+      - grafana:var/lib/grafana
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`*`)"
+      - "traefik.http.routers.grafana.entrypoints=web"
+
+  traefik:
+    image: "traefik:v2.0.0-rc3"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+volumes:
+  db:
+  grafana:
