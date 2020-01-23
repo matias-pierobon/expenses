@@ -3,14 +3,14 @@ version: "3.3"
 services:
   db:
     image: postgres:12-alpine
-    restart: unless-stoped
+    restart: unless-stopped
     env_file: conifg/db/.env
     volumes:
       - db:/var/lib/postgresql/data
 
   adminer:
     image: adminer
-    restart: unless-stoped
+    restart: unless-stopped
     depends_on:
       - db
     labels:
@@ -20,7 +20,7 @@ services:
 
   grafana:
     image: grafana/grafana
-    restart: unless-stoped
+    restart: unless-stopped
     env_file: config/grafana/.env
     volumes:
       - grafana:var/lib/grafana
@@ -39,6 +39,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+    restart: unless-stopped
     ports:
       - "80:80"
       - "8080:8080"
