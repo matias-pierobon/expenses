@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
     env_file: config/grafana/.env
     volumes:
-      - grafana:var/lib/grafana
+      - grafana:/var/lib/grafana
     depends_on:
       - db
     labels:
